@@ -1,31 +1,39 @@
 import React, { useState } from 'react';
+import { FaEye } from "react-icons/fa";
+import { IoEyeOff } from "react-icons/io5";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import {auth} from './firebase'
 const Reg = () => {
     const[error,setError]=useState()
+    const [showPass,setShowPass]=useState(false)
     const handleReg=e=>{
         e.preventDefault()
         const email=e.target.email.value;
         const password=e.target.password.value;
-            console.log(email,password);
+        const terms=e.target.terms.checked
+            console.log(email,password,terms);
+
+            if(!terms){
+              setError('Please accept terms')
+              return
+            }
             const expression=/(?=.*\d)(?=.[a-z])(?=.*[A-Z]).{8,}/
             if(expression.test(password)===false){
 setError('lowercase,uppercase,digit,6characters')
             }
 
-            // const auth = getAuth();
+          
             createUserWithEmailAndPassword(auth, email, password)
               .then((result) => {
                 console.log(result);
                 
-                // Signed up 
-                // const user = userCredential.user;
-                // ...
+                
               })
               .catch((error) => {  
                 console.log(error);
                 
               });
+
 
 
 
@@ -75,14 +83,22 @@ setError('lowercase,uppercase,digit,6characters')
       <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
     </g>
   </svg>
+  <div className=' 
+  relative'>
   <input
-    type="password"
+    type={showPass? 'text':"password"}
     name='password'
     required
     placeholder="Password"
     
     
   />
+  <button onClick={()=>{setShowPass(!showPass)}} className='absolute btn btn-xs -right-29'>
+  {
+    showPass? <IoEyeOff />:<FaEye />
+  }
+  </button>
+  </div>
 </label>
 <p className="validator-hint hidden">
   Must be more than 8 characters, including
@@ -90,7 +106,15 @@ setError('lowercase,uppercase,digit,6characters')
 </p>
 
             </div>
-            <button className="btn btn-soft btn-info mt-5 items-start">Submit</button>
+
+          <div className='grid '>
+          <label className="label">
+    <input type="checkbox" name='terms' defaultChecked className="checkbox " />
+    Terms and condition
+    <button className="btn btn-soft btn-info pt-2 mt-3 items-start">Submit</button>
+  </label>
+          </div>
+            
         </div>
 
         </form>
