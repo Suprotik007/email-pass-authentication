@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { FaEye } from "react-icons/fa";
 import { IoEyeOff } from "react-icons/io5";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import {auth} from './firebase'
+import { Link } from 'react-router';
 const Reg = () => {
-    const[error,setError]=useState()
+    const[error,setError]=useState('')
+
+    const [succsess,setSuccess]=useState(false)
     const [showPass,setShowPass]=useState(false)
     const handleReg=e=>{
         e.preventDefault()
@@ -26,7 +29,10 @@ setError('lowercase,uppercase,digit,6characters')
             createUserWithEmailAndPassword(auth, email, password)
               .then((result) => {
                 console.log(result);
-                
+                sendEmailVerification(auth.currentUser)
+                .then(()=>{
+                  setSuccess(true)
+                })
                 
               })
               .catch((error) => {  
@@ -116,8 +122,11 @@ setError('lowercase,uppercase,digit,6characters')
           </div>
             
         </div>
-
+<h2>
+  already have an account? Please <Link className='text-amber-200' to='/login'>Login</Link>
+</h2>
         </form>
+        
     );
 };
 
